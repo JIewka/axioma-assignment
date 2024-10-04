@@ -1,5 +1,7 @@
 ﻿using AxiomaAssignment;
 using Moq;
+using System.Text.Json;
+using System.Xml.Linq;
 using Xunit;
 using Xunit.Sdk;
 
@@ -86,29 +88,6 @@ namespace Test
             Assert.Equal("Bor", result[1]["Surname"]);
         }
 
-        [Fact]
-        public void TestParseInputQueryToSearchNode()
-        {
-            // arrange
-            var searchQuery = "Name=\"Alex\"";
-            var parsingService = new ParsingService();
-
-            // act
-            INode resultNode = parsingService.Parse(searchQuery);
-
-            // assert that resultNode is smth like the one below
-            /*var searchNode = new Node
-            {
-                Operator = OperatorEnum.EQ,
-                LeftNode = new Node
-                {
-                    ColumnName = "Surname"
-                },
-                RightNode = new Node
-                {
-                    Value = "Bor"
-                }
-            };*/
-        }
+        
     }
 }
