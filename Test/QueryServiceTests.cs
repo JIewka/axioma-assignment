@@ -309,5 +309,46 @@ namespace Test
             Assert.Equal("John", result[0]["Name"]);
             Assert.Equal("35", result[0]["Age"]);
         }
+
+        [Fact]
+        public void TestLikeMultipleResultsReturned()
+        {
+            // arrange
+            var repositoryMock = new Mock<IRepository>();
+            repositoryMock
+                .Setup(r => r.GetRowsFromAllCsvFiles())
+                .Returns(new List<IDictionary<string, string>>
+                {
+                    new Dictionary<string, string> { { "Name", "Aleksej" }, { "Surname", "Borisov" } },
+                    new Dictionary<string, string> { { "Name", "John" }, { "Surname", "Doe" } },
+                    new Dictionary<string, string> { { "Name", "ALEKSANDER" }, { "Surname", "Willis" } }
+                });
+
+            var service = new QueryService(repositoryMock.Object);
+
+            var searchNode = new Node
+            {
+                Operator = OperatorEnum.LIKE,
+                LeftNode = new Node
+                {
+                    ColumnName = "Name"
+                },
+                RightNode = new Node
+                {
+                    Value = "Leks"
+                }
+            };
+
+            // act
+            var result = service.Search(searchNode);
+
+            // assert
+            Assert.Equal(2, result.Count);
+            Assert.Equal("Aleksej", result[0]["Name"]);
+            Assert.Equal("Borisov", result[0]["Surname"]);
+
+            Assert.Equal("ALEKSANDER", result[1]["Name"]);
+            Assert.Equal("Willis", result[1]["Surname"]);
+        }
     }
 }

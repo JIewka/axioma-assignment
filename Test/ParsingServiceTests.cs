@@ -95,7 +95,7 @@ namespace Test
 
             // act & assert
             var exception = Assert.Throws<ArgumentException>(() => parsingService.Parse(searchQuery));
-            Assert.Equal($"Invalid query format. Operator should be equal to '=' instead of name", exception.Message);
+            Assert.Equal($"Invalid query format. Unsupported operator 'name'", exception.Message);
         }
 
         [Fact]
@@ -263,6 +263,112 @@ namespace Test
                     {
                         Value = "john"
                     }
+                }
+            };
+
+            // act
+            INode actualNode = parsingService.Parse(searchQuery);
+
+            // assert
+            Assert.Equal(JsonSerializer.Serialize(expectedNode), JsonSerializer.Serialize(actualNode));
+        }
+
+        [Theory]
+        [InlineData("like")]
+        [InlineData("LIKE")]
+        public void TestParseWithLikeOperatorInputQuery(string likeOperator)
+        {
+            // arrange
+            var searchQuery = $"Description {likeOperator} developer";
+            var parsingService = new ParsingService();
+            var expectedNode = new Node
+            {
+                Operator = OperatorEnum.LIKE,
+                LeftNode = new Node
+                {
+                    ColumnName = "Description",
+                },
+                RightNode = new Node
+                {
+                    Value = "developer"
+                }
+            };
+
+            // act
+            INode actualNode = parsingService.Parse(searchQuery);
+
+            // assert
+            Assert.Equal(JsonSerializer.Serialize(expectedNode), JsonSerializer.Serialize(actualNode));
+        }
+
+        [Fact]
+        public void TestParseWithLessThanOperatorInputQuery()
+        {
+            // arrange
+            var searchQuery = "Age < 30";
+            var parsingService = new ParsingService();
+            var expectedNode = new Node
+            {
+                Operator = OperatorEnum.LT,
+                LeftNode = new Node
+                {
+                    ColumnName = "Age",
+                },
+                RightNode = new Node
+                {
+                    Value = "30"
+                }
+            };
+
+            // act
+            INode actualNode = parsingService.Parse(searchQuery);
+
+            // assert
+            Assert.Equal(JsonSerializer.Serialize(expectedNode), JsonSerializer.Serialize(actualNode));
+        }
+
+        [Fact]
+        public void TestParseWithGreaterThanOperatorInputQuery()
+        {
+            // arrange
+            var searchQuery = "Age > 18";
+            var parsingService = new ParsingService();
+            var expectedNode = new Node
+            {
+                Operator = OperatorEnum.GT,
+                LeftNode = new Node
+                {
+                    ColumnName = "Age",
+                },
+                RightNode = new Node
+                {
+                    Value = "18"
+                }
+            };
+
+            // act
+            INode actualNode = parsingService.Parse(searchQuery);
+
+            // assert
+            Assert.Equal(JsonSerializer.Serialize(expectedNode), JsonSerializer.Serialize(actualNode));
+        }
+
+        [Fact]
+        public void TestParseWithNotEqualsOperatorInputQuery()
+        {
+            // arrange
+            var searchQuery = "Name != Alex";
+            var parsingService = new ParsingService();
+            var expectedNode = new Node
+            {
+                Operator = OperatorEnum.NE,
+                LeftNode = new Node
+                {
+                    ColumnName = "Name",
+                },
+                RightNode = new Node
+                {
+                    Value = "Alex"
                 }
             };
 

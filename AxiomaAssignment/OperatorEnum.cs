@@ -8,6 +8,7 @@ namespace AxiomaAssignment
         OR,
         AND,
         LT,
-        GT
+        GT,
+        LIKE
     }
 }

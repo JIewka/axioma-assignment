@@ -71,34 +71,52 @@ namespace AxiomaAssignment
                 throw new ArgumentException("Invalid query format. It should contain at least 3 nodes");
             }
 
-            // Create node for the left operand (column name)
-            var columnNameNode = new Node
+            // Create node for the left operand (column name or value)
+            var leftNode = new Node
             {
                 ColumnName = tokens[0]
             };
-            tokens.RemoveAt(0); // consume column name
+            tokens.RemoveAt(0); // consume column name or value
 
-            // Operator (must be '=' for this example)
+            // Operator (can be =, !=, LIKE, >, or <)
             var operatorToken = tokens[0];
-            if (operatorToken != "=")
-            {
-                throw new ArgumentException($"Invalid query format. Operator should be equal to '=' instead of {operatorToken}");
-            }
-            tokens.RemoveAt(0); // consume '='
+            OperatorEnum operatorEnum;
 
-            // Create node for the right operand (value)
-            var valueNode = new Node
+            switch (operatorToken.ToLower())
+            {
+                case "=":
+                    operatorEnum = OperatorEnum.EQ;
+                    break;
+                case "!=":
+                    operatorEnum = OperatorEnum.NE;
+                    break;
+                case "like":
+                    operatorEnum = OperatorEnum.LIKE;
+                    break;
+                case ">":
+                    operatorEnum = OperatorEnum.GT;
+                    break;
+                case "<":
+                    operatorEnum = OperatorEnum.LT;
+                    break;
+                default:
+                    throw new ArgumentException($"Invalid query format. Unsupported operator '{operatorToken}'");
+            }
+            tokens.RemoveAt(0); // consume operator
+
+            // Create node for the right operand (value or column name)
+            var rightNode = new Node
             {
                 Value = tokens[0]
             };
-            tokens.RemoveAt(0); // consume value
+            tokens.RemoveAt(0); // consume value or column name
 
             // Return a node representing the comparison with operator and two sub-nodes
             return new Node
             {
-                Operator = OperatorEnum.EQ,
-                LeftNode = columnNameNode,  // Column name node
-                RightNode = valueNode       // Value node
+                Operator = operatorEnum,
+                LeftNode = leftNode,  // Column name node
+                RightNode = rightNode // Value node
             };
         }
     }

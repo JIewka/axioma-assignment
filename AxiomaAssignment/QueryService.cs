@@ -12,7 +12,8 @@
         private IList<IDictionary<string, string>> FilterRows(INode node, IList<IDictionary<string, string>> rows)
         {
             if (node.Operator == OperatorEnum.EQ || node.Operator == OperatorEnum.NE ||
-                node.Operator == OperatorEnum.LT || node.Operator == OperatorEnum.GT)
+                node.Operator == OperatorEnum.LT || node.Operator == OperatorEnum.GT ||
+                node.Operator == OperatorEnum.LIKE)
             {
                 return rows.Where(row => EvaluateCondition(node.LeftNode, node.RightNode, node.Operator.Value, row)).ToList();
             }
@@ -81,6 +82,11 @@
                 {
                     throw new ArgumentException("Both column value and comparison value must be integers for LT or GT operators.");
                 }
+            }
+
+            if (operatorType == OperatorEnum.LIKE)
+            {
+                return columnValue.Contains(comparisonValue, StringComparison.InvariantCultureIgnoreCase);
             }
 
             // Handle equality and not equal comparisons
