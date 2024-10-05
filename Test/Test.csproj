@@ -20,4 +20,13 @@
     <ProjectReference Include="..\AxiomaAssignment\AxiomaAssignment.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="TestCsvFiles\FirstTestCsvFile.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TestCsvFiles\SecondTestCsvFile.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

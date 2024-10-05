@@ -7,6 +7,7 @@ namespace AxiomaAssignment
         NE,
         OR,
         AND,
-        NOT
+        LT,
+        GT
     }
 }

@@ -7,5 +7,20 @@ namespace AxiomaAssignment
         public string? ColumnName { get; set; } = null;
         public INode? LeftNode { get; set; }
         public INode? RightNode { get; set; }
+
+        public bool IsColumnNode()
+        {
+            return ColumnName != null && Operator == null && Value == null;
+        }
+
+        public bool IsValueNode()
+        {
+            return ColumnName == null && Operator == null && Value != null;
+        }
+
+        public bool IsOperatorNode()
+        {
+            return ColumnName == null && Operator != null && Value == null;
+        }
     }
 }

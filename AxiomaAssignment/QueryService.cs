@@ -4,34 +4,44 @@
     {
         public IList<IDictionary<string, string>> Search(INode searchNode)
         {
-            // Get all rows from the repository
-            var rows = repository.GetRows();
+            var rows = repository.GetRowsFromAllCsvFiles();
 
-            // Filter the rows based on the searchNode
             return FilterRows(searchNode, rows);
         }
 
         private IList<IDictionary<string, string>> FilterRows(INode node, IList<IDictionary<string, string>> rows)
         {
-            // Base case: leaf node or single condition
-            if (node.Operator == OperatorEnum.EQ)
+            if (node.Operator == OperatorEnum.EQ || node.Operator == OperatorEnum.NE ||
+                node.Operator == OperatorEnum.LT || node.Operator == OperatorEnum.GT)
             {
-                return rows.Where(row => EvaluateCondition(node.LeftNode, node.RightNode, row)).ToList();
+                return rows.Where(row => EvaluateCondition(node.LeftNode, node.RightNode, node.Operator.Value, row)).ToList();
+            }
+            if (node.Operator == OperatorEnum.AND)
+            {
+                var leftFilteredRows = FilterRows(node.LeftNode!, rows);
+                var rightFilteredRows = FilterRows(node.RightNode!, leftFilteredRows);
+                return rightFilteredRows;
+            }
+            if (node.Operator == OperatorEnum.OR)
+            {
+                var leftFilteredRows = FilterRows(node.LeftNode!, rows);
+                var rightFilteredRows = FilterRows(node.RightNode!, rows);
+                return leftFilteredRows.Union(rightFilteredRows).ToList();
             }
 
-            // For future use: extend for other operators like AND, OR, etc.
             throw new NotImplementedException($"Operator {node.Operator} is not supported.");
-        }
+        } 
 
-        private bool EvaluateCondition(INode leftNode, INode rightNode, IDictionary<string, string> row)
+        private bool EvaluateCondition(INode leftNode, INode rightNode, OperatorEnum operatorType, IDictionary<string, string> row)
         {
-            // Get the column value from the row
             INode columnNode;
-            if (!string.IsNullOrEmpty(leftNode.ColumnName))
+            INode valueNode;
+
+            if (leftNode.IsColumnNode())
             {
                 columnNode = leftNode;
             }
-            else if (!string.IsNullOrEmpty(rightNode.ColumnName))
+            else if (rightNode.IsColumnNode())
             {
                 columnNode = rightNode;
             }
@@ -40,12 +50,12 @@
                 throw new Exception("Unexpected node config detected.");
             }
 
-            INode valueNode;
-            if (!string.IsNullOrEmpty(leftNode.Value))
+           
+            if (leftNode.IsValueNode())
             {
                 valueNode = leftNode;
             }
-            else if (!string.IsNullOrEmpty(rightNode.Value))
+            else if (rightNode.IsValueNode())
             {
                 valueNode = rightNode;
             }
@@ -57,9 +67,34 @@
             if (!row.ContainsKey(columnNode.ColumnName)) return false;
 
             var columnValue = row[columnNode.ColumnName];
+            var comparisonValue = valueNode.Value;
 
-            // Apply the EQUALS operation (EQ)
-            return columnValue == valueNode.Value;
+            // Try parsing as integers for numeric comparison (LT, GT)
+            if (operatorType == OperatorEnum.LT || operatorType == OperatorEnum.GT)
+            {
+                if (int.TryParse(columnValue, out int columnIntValue) && int.TryParse(comparisonValue, out int comparisonIntValue))
+                {
+                    // Perform integer comparison
+                    return operatorType == OperatorEnum.LT ? columnIntValue < comparisonIntValue : columnIntValue > comparisonIntValue;
+                }
+                else
+                {
+                    throw new ArgumentException("Both column value and comparison value must be integers for LT or GT operators.");
+                }
+            }
+
+            // Handle equality and not equal comparisons
+            switch (operatorType)
+            {
+                case OperatorEnum.EQ:
+                    return columnValue == comparisonValue;
+
+                case OperatorEnum.NE:
+                    return columnValue != comparisonValue;
+
+                default:
+                    throw new ArgumentException($"Unsupported operator {operatorType}");
+            }
         }
     }
 

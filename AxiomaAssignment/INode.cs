@@ -3,9 +3,13 @@
     public interface INode
     {
         OperatorEnum? Operator { get; set; }
-        public string? Value { get; set; }
-        public string? ColumnName { get; set; }
-        public INode? LeftNode { get; set; }
-        public INode? RightNode { get; set; }
+        string? Value { get; set; }
+        string? ColumnName { get; set; }
+        INode? LeftNode { get; set; }
+        INode? RightNode { get; set; }
+
+        bool IsColumnNode();
+        bool IsValueNode();
+        bool IsOperatorNode();
     }
 }
