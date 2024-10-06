@@ -11,13 +11,11 @@ namespace AxiomaAssignment
             return ParseExpression(tokens);
         }
 
-        // Tokenizes the input query into a list of tokens
         private List<string> Tokenize(string query)
         {
             return new List<string>(query.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
         }
 
-        // Recursive descent parser for expression
         private INode ParseExpression(List<string> tokens)
         {
             var root = ParseOr(tokens);
@@ -30,7 +28,7 @@ namespace AxiomaAssignment
 
             while (tokens.Count > 0 && tokens[0].ToLower() == "or")
             {
-                tokens.RemoveAt(0);  // consume "or"
+                tokens.RemoveAt(0);
                 var right = ParseAnd(tokens);
 
                 left = Node.CreateOperatorNode(OperatorEnum.OR, left, right);
@@ -45,7 +43,7 @@ namespace AxiomaAssignment
 
             while (tokens.Count > 0 && tokens[0].ToLower() == "and")
             {
-                tokens.RemoveAt(0);  // consume "and"
+                tokens.RemoveAt(0);
                 var right = ParseComparison(tokens);
 
                 left = Node.CreateOperatorNode(OperatorEnum.AND, left, right);
@@ -61,11 +59,9 @@ namespace AxiomaAssignment
                 throw new ArgumentException("Invalid query format. It should contain at least 3 nodes");
             }
 
-            // Create node for the left operand (column name or value)
             var leftNode = Node.CreateColumnNameNode(tokens[0]);
-            tokens.RemoveAt(0); // consume column name or value
+            tokens.RemoveAt(0);
 
-            // Operator (can be =, !=, LIKE, >, or <)
             var operatorToken = tokens[0];
             OperatorEnum operatorEnum;
 
@@ -89,13 +85,11 @@ namespace AxiomaAssignment
                 default:
                     throw new ArgumentException($"Invalid query format. Unsupported operator '{operatorToken}'");
             }
-            tokens.RemoveAt(0); // consume operator
+            tokens.RemoveAt(0);
 
-            // Create node for the right operand (value or column name)
             var rightNode = Node.CreateValueNode(tokens[0]);
-            tokens.RemoveAt(0); // consume value or column name
+            tokens.RemoveAt(0);
 
-            // Return a node representing the comparison with operator and two sub-nodes
             return Node.CreateOperatorNode(operatorEnum, leftNode, rightNode);
         }
     }

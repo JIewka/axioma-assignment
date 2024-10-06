@@ -51,7 +51,6 @@
                 throw new Exception("Unexpected node config detected.");
             }
 
-           
             if (leftNode.IsValueNode())
             {
                 valueNode = leftNode;
@@ -70,12 +69,10 @@
             var columnValue = row[columnNode.ColumnName];
             var comparisonValue = valueNode.Value;
 
-            // Try parsing as integers for numeric comparison (LT, GT)
             if (operatorType == OperatorEnum.LT || operatorType == OperatorEnum.GT)
             {
                 if (int.TryParse(columnValue, out int columnIntValue) && int.TryParse(comparisonValue, out int comparisonIntValue))
                 {
-                    // Perform integer comparison
                     return operatorType == OperatorEnum.LT ? columnIntValue < comparisonIntValue : columnIntValue > comparisonIntValue;
                 }
                 else
@@ -89,7 +86,6 @@
                 return columnValue.Contains(comparisonValue, StringComparison.InvariantCultureIgnoreCase);
             }
 
-            // Handle equality and not equal comparisons
             switch (operatorType)
             {
                 case OperatorEnum.EQ:
