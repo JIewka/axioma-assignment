@@ -9,7 +9,7 @@ TODO:
 3. Submit your code to a github repository.
 
 
-Bonus points: 
+Bonus points: ooo
 * Add Boolean logical operator support in the queries;
 * Add multiple file support;
 * Add log count value in the resulting JSON output;

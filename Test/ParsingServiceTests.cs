@@ -38,50 +38,22 @@ namespace Test
             INode actualNode = parsingService.Parse(searchQuery);
 
             // assert
-            var expectedNode = new Node
-            {
-                Operator = OperatorEnum.OR,
-                LeftNode = new Node
-                {
-                    Operator = OperatorEnum.AND,
-                    LeftNode = new Node
-                    {
-                        Operator = OperatorEnum.EQ,
-                        LeftNode = new Node
-                        {
-                            ColumnName = "Name",
-                        },
-                        RightNode = new Node
-                        {
-                            Value = "Alex"
-                        }
-                    },
-                    RightNode = new Node
-                    {
-                        Operator = OperatorEnum.EQ,
-                        LeftNode = new Node
-                        {
-                            ColumnName = "name",
-                        },
-                        RightNode = new Node
-                        {
-                            Value = "john"
-                        }
-                    }
-                },
-                RightNode = new Node
-                {
-                    Operator = OperatorEnum.EQ,
-                    LeftNode = new Node
-                    {
-                        ColumnName = "name",
-                    },
-                    RightNode = new Node
-                    {
-                        Value = "PETE"
-                    }
-                }
-            };
+            var expectedNode = Node.CreateOperatorNode(OperatorEnum.OR,
+                Node.CreateOperatorNode(OperatorEnum.AND,
+                    Node.CreateOperatorNode(OperatorEnum.EQ,
+                        Node.CreateColumnNameNode("Name"),
+                        Node.CreateValueNode("Alex")
+                    ),
+                    Node.CreateOperatorNode(OperatorEnum.EQ,
+                        Node.CreateColumnNameNode("name"),
+                        Node.CreateValueNode("john")
+                    )
+                ),
+                Node.CreateOperatorNode(OperatorEnum.EQ,
+                    Node.CreateColumnNameNode("name"),
+                    Node.CreateValueNode("PETE")
+                )
+            );
 
             Assert.Equal(JsonSerializer.Serialize(expectedNode), JsonSerializer.Serialize(actualNode));
         }
@@ -109,82 +81,34 @@ namespace Test
             INode actualNode = parsingService.Parse(searchQuery);
 
             // assert
-            var expectedNode = new Node
-            {
-                Operator = OperatorEnum.OR,
-                LeftNode = new Node
-                {
-                    Operator = OperatorEnum.OR,
-                    LeftNode = new Node
-                    {
-                        Operator = OperatorEnum.AND,
-                        LeftNode = new Node
-                        {
-                            Operator = OperatorEnum.EQ,
-                            LeftNode = new Node
-                            {
-                                ColumnName = "Name",
-                            },
-                            RightNode = new Node
-                            {
-                                Value = "Alex"
-                            }
-                        },
-                        RightNode = new Node
-                        {
-                            Operator = OperatorEnum.EQ,
-                            LeftNode = new Node
-                            {
-                                ColumnName = "name",
-                            },
-                            RightNode = new Node
-                            {
-                                Value = "john"
-                            }
-                        }
-                    },
-                    RightNode = new Node
-                    {
-                        Operator = OperatorEnum.AND,
-                        LeftNode = new Node
-                        {
-                            Operator = OperatorEnum.EQ,
-                            LeftNode = new Node
-                            {
-                                ColumnName = "name",
-                            },
-                            RightNode = new Node
-                            {
-                                Value = "PETE" 
-                            }
-                        },
-                        RightNode = new Node
-                        {
-                            Operator = OperatorEnum.EQ,
-                            LeftNode = new Node
-                            {
-                                ColumnName = "Age",
-                            },
-                            RightNode = new Node
-                            {
-                                Value = "30"
-                            }
-                        }
-                    }
-                },
-                RightNode = new Node
-                {
-                    Operator = OperatorEnum.EQ,
-                    LeftNode = new Node
-                    {
-                        ColumnName = "Department",
-                    },
-                    RightNode = new Node
-                    {
-                        Value = "Sales"
-                    }
-                }
-            };
+            var expectedNode = Node.CreateOperatorNode(OperatorEnum.OR,
+                Node.CreateOperatorNode(OperatorEnum.OR,
+                    Node.CreateOperatorNode(OperatorEnum.AND,
+                        Node.CreateOperatorNode(OperatorEnum.EQ,
+                            Node.CreateColumnNameNode("Name"),
+                            Node.CreateValueNode("Alex")
+                        ),
+                        Node.CreateOperatorNode(OperatorEnum.EQ,
+                            Node.CreateColumnNameNode("name"),
+                            Node.CreateValueNode("john")
+                        )
+                    ),
+                    Node.CreateOperatorNode(OperatorEnum.AND,
+                        Node.CreateOperatorNode(OperatorEnum.EQ,
+                            Node.CreateColumnNameNode("name"),
+                            Node.CreateValueNode("PETE")
+                        ),
+                        Node.CreateOperatorNode(OperatorEnum.EQ,
+                            Node.CreateColumnNameNode("Age"),
+                            Node.CreateValueNode("30")
+                        )
+                    )
+                ),
+                Node.CreateOperatorNode(OperatorEnum.EQ,
+                    Node.CreateColumnNameNode("Department"),
+                    Node.CreateValueNode("Sales")
+                )
+            );
 
             Assert.Equal(JsonSerializer.Serialize(expectedNode), JsonSerializer.Serialize(actualNode));
         }
@@ -195,34 +119,16 @@ namespace Test
             // arrange
             var searchQuery = "Name = Alex OR name = john";
             var parsingService = new ParsingService();
-            var expectedNode = new Node
-            {
-                Operator = OperatorEnum.OR,
-                LeftNode = new Node
-                {
-                    Operator = OperatorEnum.EQ,
-                    LeftNode = new Node
-                    {
-                        ColumnName = "Name",
-                    },
-                    RightNode = new Node
-                    {
-                        Value = "Alex"
-                    }
-                },
-                RightNode = new Node
-                {
-                    Operator = OperatorEnum.EQ,
-                    LeftNode = new Node
-                    {
-                        ColumnName = "name",
-                    },
-                    RightNode = new Node
-                    {
-                        Value = "john"
-                    }
-                }
-            };
+            var expectedNode = Node.CreateOperatorNode(OperatorEnum.OR,
+                Node.CreateOperatorNode(OperatorEnum.EQ,
+                    Node.CreateColumnNameNode("Name"),
+                    Node.CreateValueNode("Alex")
+                ),
+                Node.CreateOperatorNode(OperatorEnum.EQ,
+                    Node.CreateColumnNameNode("name"),
+                    Node.CreateValueNode("john")
+                )
+            );
 
             // act
             INode actualNode = parsingService.Parse(searchQuery);
@@ -237,34 +143,16 @@ namespace Test
             // arrange
             var searchQuery = "Name = Alex AND name = john";
             var parsingService = new ParsingService();
-            var expectedNode = new Node
-            {
-                Operator = OperatorEnum.AND,
-                LeftNode = new Node
-                {
-                    Operator = OperatorEnum.EQ,
-                    LeftNode = new Node
-                    {
-                        ColumnName = "Name",
-                    },
-                    RightNode = new Node
-                    {
-                        Value = "Alex"
-                    }
-                },
-                RightNode = new Node
-                {
-                    Operator = OperatorEnum.EQ,
-                    LeftNode = new Node
-                    {
-                        ColumnName = "name",
-                    },
-                    RightNode = new Node
-                    {
-                        Value = "john"
-                    }
-                }
-            };
+            var expectedNode = Node.CreateOperatorNode(OperatorEnum.AND,
+                Node.CreateOperatorNode(OperatorEnum.EQ,
+                    Node.CreateColumnNameNode("Name"),
+                    Node.CreateValueNode("Alex")
+                ),
+                Node.CreateOperatorNode(OperatorEnum.EQ,
+                    Node.CreateColumnNameNode("name"),
+                    Node.CreateValueNode("john")
+                )
+            );
 
             // act
             INode actualNode = parsingService.Parse(searchQuery);
@@ -281,18 +169,10 @@ namespace Test
             // arrange
             var searchQuery = $"Description {likeOperator} developer";
             var parsingService = new ParsingService();
-            var expectedNode = new Node
-            {
-                Operator = OperatorEnum.LIKE,
-                LeftNode = new Node
-                {
-                    ColumnName = "Description",
-                },
-                RightNode = new Node
-                {
-                    Value = "developer"
-                }
-            };
+            var expectedNode = Node.CreateOperatorNode(OperatorEnum.LIKE,
+                Node.CreateColumnNameNode("Description"),
+                Node.CreateValueNode("developer")
+            );
 
             // act
             INode actualNode = parsingService.Parse(searchQuery);
@@ -307,18 +187,10 @@ namespace Test
             // arrange
             var searchQuery = "Age < 30";
             var parsingService = new ParsingService();
-            var expectedNode = new Node
-            {
-                Operator = OperatorEnum.LT,
-                LeftNode = new Node
-                {
-                    ColumnName = "Age",
-                },
-                RightNode = new Node
-                {
-                    Value = "30"
-                }
-            };
+            var expectedNode = Node.CreateOperatorNode(OperatorEnum.LT,
+                Node.CreateColumnNameNode("Age"),
+                Node.CreateValueNode("30")
+            );
 
             // act
             INode actualNode = parsingService.Parse(searchQuery);
@@ -333,18 +205,10 @@ namespace Test
             // arrange
             var searchQuery = "Age > 18";
             var parsingService = new ParsingService();
-            var expectedNode = new Node
-            {
-                Operator = OperatorEnum.GT,
-                LeftNode = new Node
-                {
-                    ColumnName = "Age",
-                },
-                RightNode = new Node
-                {
-                    Value = "18"
-                }
-            };
+            var expectedNode = Node.CreateOperatorNode(OperatorEnum.GT,
+                Node.CreateColumnNameNode("Age"),
+                Node.CreateValueNode("18")
+            );
 
             // act
             INode actualNode = parsingService.Parse(searchQuery);
@@ -359,18 +223,10 @@ namespace Test
             // arrange
             var searchQuery = "Name != Alex";
             var parsingService = new ParsingService();
-            var expectedNode = new Node
-            {
-                Operator = OperatorEnum.NE,
-                LeftNode = new Node
-                {
-                    ColumnName = "Name",
-                },
-                RightNode = new Node
-                {
-                    Value = "Alex"
-                }
-            };
+            var expectedNode = Node.CreateOperatorNode(OperatorEnum.NE,
+                Node.CreateColumnNameNode("Name"),
+                Node.CreateValueNode("Alex")
+            );
 
             // act
             INode actualNode = parsingService.Parse(searchQuery);

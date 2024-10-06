@@ -33,12 +33,7 @@ namespace AxiomaAssignment
                 tokens.RemoveAt(0);  // consume "or"
                 var right = ParseAnd(tokens);
 
-                left = new Node
-                {
-                    Operator = OperatorEnum.OR,
-                    LeftNode = left,
-                    RightNode = right
-                };
+                left = Node.CreateOperatorNode(OperatorEnum.OR, left, right);
             }
 
             return left;
@@ -53,12 +48,7 @@ namespace AxiomaAssignment
                 tokens.RemoveAt(0);  // consume "and"
                 var right = ParseComparison(tokens);
 
-                left = new Node
-                {
-                    Operator = OperatorEnum.AND,
-                    LeftNode = left,
-                    RightNode = right
-                };
+                left = Node.CreateOperatorNode(OperatorEnum.AND, left, right);
             }
 
             return left;
@@ -72,10 +62,7 @@ namespace AxiomaAssignment
             }
 
             // Create node for the left operand (column name or value)
-            var leftNode = new Node
-            {
-                ColumnName = tokens[0]
-            };
+            var leftNode = Node.CreateColumnNameNode(tokens[0]);
             tokens.RemoveAt(0); // consume column name or value
 
             // Operator (can be =, !=, LIKE, >, or <)
@@ -105,19 +92,11 @@ namespace AxiomaAssignment
             tokens.RemoveAt(0); // consume operator
 
             // Create node for the right operand (value or column name)
-            var rightNode = new Node
-            {
-                Value = tokens[0]
-            };
+            var rightNode = Node.CreateValueNode(tokens[0]);
             tokens.RemoveAt(0); // consume value or column name
 
             // Return a node representing the comparison with operator and two sub-nodes
-            return new Node
-            {
-                Operator = operatorEnum,
-                LeftNode = leftNode,  // Column name node
-                RightNode = rightNode // Value node
-            };
+            return Node.CreateOperatorNode(operatorEnum, leftNode, rightNode);
         }
     }
 }

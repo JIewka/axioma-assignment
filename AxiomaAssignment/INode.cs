@@ -2,11 +2,11 @@
 {
     public interface INode
     {
-        OperatorEnum? Operator { get; set; }
-        string? Value { get; set; }
-        string? ColumnName { get; set; }
-        INode? LeftNode { get; set; }
-        INode? RightNode { get; set; }
+        OperatorEnum? Operator { get; }
+        string? Value { get; }
+        string? ColumnName { get; }
+        INode? LeftNode { get; }
+        INode? RightNode { get; }
 
         bool IsColumnNode();
         bool IsValueNode();

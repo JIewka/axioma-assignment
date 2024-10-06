@@ -1,3 +1,7 @@
+using CsvHelper;
+using System.Formats.Asn1;
+using System.Globalization;
+
 namespace AxiomaAssignment
 {
     public class Repository : IRepository
@@ -11,21 +15,21 @@ namespace AxiomaAssignment
         public IList<IDictionary<string, string>> GetRowsFromSingleCsvFile(string csvFilePath)
         {
             var result = new List<IDictionary<string, string>>();
-            var rows = File.ReadAllLines(csvFilePath);
-            var columnNames = rows[0].Split(',');
-
-           
-            for (int rowIndex = 1; rowIndex < rows.Length; rowIndex++)
+            using (var reader = new StreamReader(csvFilePath))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
-                var rowValues = rows[rowIndex].Split(',');
-                var rowDict = new Dictionary<string, string>();
+                csv.Read();
+                csv.ReadHeader(); // Read the header
 
-                for (int columnIndex = 0; columnIndex < columnNames.Length; columnIndex++)
+                while (csv.Read())
                 {
-                    rowDict[columnNames[columnIndex]] = rowValues[columnIndex];
+                    var rowDict = new Dictionary<string, string>();
+                    foreach (var header in csv.HeaderRecord)
+                    {
+                        rowDict[header] = csv.GetField(header);
+                    }
+                    result.Add(rowDict);
                 }
-
-                result.Add(rowDict);
             }
 
             return result;
@@ -44,24 +48,5 @@ namespace AxiomaAssignment
 
             return result;
         }
-
-        //private string GetCsvFolderPathFromConfig()
-        //{
-        //    string configFilePath = "config.txt";
-
-        //    if (!File.Exists(configFilePath))
-        //    {
-        //        throw new FileNotFoundException("The configuration file was not found.", configFilePath);
-        //    }
-
-        //    string csvFolderPath = File.ReadAllText(configFilePath).Trim();
-
-        //    if (string.IsNullOrEmpty(csvFolderPath))
-        //    {
-        //        throw new InvalidOperationException("The configuration file contains an empty CSV folder path.");
-        //    }
-
-        //    return csvFolderPath;
-        //}
     }
 }

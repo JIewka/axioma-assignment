@@ -11,102 +11,43 @@ namespace Test
     public class NodeTests
     {
         [Fact]
-        public void IsColumnNode_ReturnsTrue_WhenOnlyColumnNameIsSet()
+        public void TestIfIsColumnNodeReturnsTrue()
         {
-            // Arrange
-            var node = new Node
-            {
-                ColumnName = "Name"
-            };
+            // arrange
+            var node = Node.CreateColumnNameNode("Name");
 
-            // Act
+            // act
             var result = node.IsColumnNode();
 
-            // Assert
+            // assert
             Assert.True(result);
         }
 
         [Fact]
-        public void IsColumnNode_ReturnsFalse_WhenColumnNameAndOperatorAreSet()
+        public void TestIfIsValueNodeReturnsTrue()
         {
-            // Arrange
-            var node = new Node
-            {
-                ColumnName = "Name",
-                Operator = OperatorEnum.EQ
-            };
+            // arrange
+            var node = Node.CreateValueNode("John");
 
-            // Act
-            var result = node.IsColumnNode();
-
-            // Assert
-            Assert.False(result);
-        }
-
-        [Fact]
-        public void IsValueNode_ReturnsTrue_WhenOnlyValueIsSet()
-        {
-            // Arrange
-            var node = new Node
-            {
-                Value = "John"
-            };
-
-            // Act
+            // act
             var result = node.IsValueNode();
 
-            // Assert
+            // assert
             Assert.True(result);
         }
 
         [Fact]
-        public void IsValueNode_ReturnsFalse_WhenValueAndOperatorAreSet()
+        public void TestIfIsOperatorNodeReturnsTrue()
         {
-            // Arrange
-            var node = new Node
-            {
-                Value = "John",
-                Operator = OperatorEnum.EQ
-            };
+            // arrange
+            var node = Node.CreateOperatorNode(OperatorEnum.EQ, Node.CreateColumnNameNode("Name"),
+                Node.CreateValueNode("John"));
 
-            // Act
-            var result = node.IsValueNode();
-
-            // Assert
-            Assert.False(result);
-        }
-
-        [Fact]
-        public void IsOperatorNode_ReturnsTrue_WhenOnlyOperatorIsSet()
-        {
-            // Arrange
-            var node = new Node
-            {
-                Operator = OperatorEnum.EQ
-            };
-
-            // Act
+            // act
             var result = node.IsOperatorNode();
 
-            // Assert
+            // assert
             Assert.True(result);
-        }
-
-        [Fact]
-        public void IsOperatorNode_ReturnsFalse_WhenOperatorAndValueAreSet()
-        {
-            // Arrange
-            var node = new Node
-            {
-                Operator = OperatorEnum.EQ,
-                Value = "John"
-            };
-
-            // Act
-            var result = node.IsOperatorNode();
-
-            // Assert
-            Assert.False(result);
         }
     }
 }

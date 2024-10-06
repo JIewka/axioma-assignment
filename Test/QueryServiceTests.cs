@@ -24,18 +24,10 @@ namespace Test
 
             var service = new QueryService(repositoryMock.Object);
 
-            var searchNode = new Node
-            {
-                Operator = OperatorEnum.EQ,
-                LeftNode = new Node
-                {
-                    Value = "John"
-                },
-                RightNode = new Node
-                {
-                    ColumnName = "Name"
-                }
-            };
+            var searchNode = Node.CreateOperatorNode(OperatorEnum.EQ,
+                Node.CreateValueNode("John"),
+                Node.CreateColumnNameNode("Name")
+            );
 
             // act
             var result = service.Search(searchNode);
@@ -61,18 +53,10 @@ namespace Test
 
             var service = new QueryService(repositoryMock.Object);
 
-            var searchNode = new Node
-            {
-                Operator = OperatorEnum.EQ,
-                LeftNode = new Node
-                {
-                    ColumnName = "Surname"
-                },
-                RightNode = new Node
-                {
-                    Value = "Borisov"
-                }
-            };
+            var searchNode = Node.CreateOperatorNode(OperatorEnum.EQ,
+                Node.CreateColumnNameNode("Surname"),
+                Node.CreateValueNode("Borisov")
+            );
 
             // act
             var result = service.Search(searchNode);
@@ -103,34 +87,16 @@ namespace Test
 
             var service = new QueryService(repositoryMock.Object);
 
-            var searchNode = new Node
-            {
-                Operator = OperatorEnum.OR,
-                LeftNode = new Node
-                {
-                    Operator = OperatorEnum.EQ,
-                    LeftNode = new Node
-                    {
-                        ColumnName = "Name"
-                    },
-                    RightNode = new Node
-                    {
-                        Value = "Aleksej"
-                    }
-                },
-                RightNode = new Node
-                {
-                    Operator = OperatorEnum.EQ,
-                    LeftNode = new Node
-                    {
-                        ColumnName = "Name"
-                    },
-                    RightNode = new Node
-                    {
-                        Value = "John"
-                    }
-                }
-            };
+            var searchNode = Node.CreateOperatorNode(OperatorEnum.OR,
+                Node.CreateOperatorNode(OperatorEnum.EQ,
+                    Node.CreateColumnNameNode("Name"),
+                    Node.CreateValueNode("Aleksej")
+                ),
+                Node.CreateOperatorNode(OperatorEnum.EQ,
+                    Node.CreateColumnNameNode("Name"),
+                    Node.CreateValueNode("John")
+                )
+            );
 
             // act
             var result = service.Search(searchNode);
@@ -161,34 +127,16 @@ namespace Test
 
             var service = new QueryService(repositoryMock.Object);
 
-            var searchNode = new Node
-            {
-                Operator = OperatorEnum.AND,
-                LeftNode = new Node
-                {
-                    Operator = OperatorEnum.EQ,
-                    LeftNode = new Node
-                    {
-                        ColumnName = "Surname"
-                    },
-                    RightNode = new Node
-                    {
-                        Value = "Borisov"
-                    }
-                },
-                RightNode = new Node
-                {
-                    Operator = OperatorEnum.EQ,
-                    LeftNode = new Node
-                    {
-                        ColumnName = "Name"
-                    },
-                    RightNode = new Node
-                    {
-                        Value = "John"
-                    }
-                }
-            };
+            var searchNode = Node.CreateOperatorNode(OperatorEnum.AND,
+                Node.CreateOperatorNode(OperatorEnum.EQ,
+                    Node.CreateColumnNameNode("Surname"),
+                    Node.CreateValueNode("Borisov")
+                ),
+                Node.CreateOperatorNode(OperatorEnum.EQ,
+                    Node.CreateColumnNameNode("Name"),
+                    Node.CreateValueNode("John")
+                )
+            );
 
             // act
             var result = service.Search(searchNode);
@@ -214,18 +162,10 @@ namespace Test
 
             var service = new QueryService(repositoryMock.Object);
 
-            var searchNode = new Node
-            {
-                Operator = OperatorEnum.NE,
-                LeftNode = new Node
-                {
-                    ColumnName = "Surname"
-                },
-                RightNode = new Node
-                {
-                    Value = "Doe"
-                }
-            };
+            var searchNode = Node.CreateOperatorNode(OperatorEnum.NE,
+                Node.CreateColumnNameNode("Surname"),
+                Node.CreateValueNode("Doe")
+            );
 
             // act
             var result = service.Search(searchNode);
@@ -251,18 +191,10 @@ namespace Test
 
             var service = new QueryService(repositoryMock.Object);
 
-            var searchNode = new Node
-            {
-                Operator = OperatorEnum.LT,
-                LeftNode = new Node
-                {
-                    ColumnName = "Age"
-                },
-                RightNode = new Node
-                {
-                    Value = "30"
-                }
-            };
+            var searchNode = Node.CreateOperatorNode(OperatorEnum.LT,
+                Node.CreateColumnNameNode("Age"),
+                Node.CreateValueNode("30")
+            );
 
             // act
             var result = service.Search(searchNode);
@@ -288,18 +220,10 @@ namespace Test
 
             var service = new QueryService(repositoryMock.Object);
 
-            var searchNode = new Node
-            {
-                Operator = OperatorEnum.GT,
-                LeftNode = new Node
-                {
-                    ColumnName = "Age"
-                },
-                RightNode = new Node
-                {
-                    Value = "30"
-                }
-            };
+            var searchNode = Node.CreateOperatorNode(OperatorEnum.GT,
+                Node.CreateColumnNameNode("Age"),
+                Node.CreateValueNode("30")
+            );
 
             // act
             var result = service.Search(searchNode);
@@ -326,18 +250,10 @@ namespace Test
 
             var service = new QueryService(repositoryMock.Object);
 
-            var searchNode = new Node
-            {
-                Operator = OperatorEnum.LIKE,
-                LeftNode = new Node
-                {
-                    ColumnName = "Name"
-                },
-                RightNode = new Node
-                {
-                    Value = "Leks"
-                }
-            };
+            var searchNode = Node.CreateOperatorNode(OperatorEnum.LIKE,
+                Node.CreateColumnNameNode("Name"),
+                Node.CreateValueNode("Leks")
+            );
 
             // act
             var result = service.Search(searchNode);
