@@ -9,7 +9,7 @@ namespace AxiomaAssignment.Services
             var rows = repository.GetRowsFromAllCsvFiles();
 
             return FilterRows(searchNode, rows);
-        }
+        } 
 
         private IList<IDictionary<string, string>> FilterRows(INode node, IList<IDictionary<string, string>> rows)
         {
