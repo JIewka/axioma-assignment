@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Sqlite;
 
-namespace AxiomaAssignment
+namespace AxiomaAssignment.Repositories
 {
     public class AuditDbContext : DbContext
     {

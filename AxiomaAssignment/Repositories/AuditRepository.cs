@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace AxiomaAssignment
+namespace AxiomaAssignment.Repositories
 {
     public class AuditRepository : IAuditRepository
     {

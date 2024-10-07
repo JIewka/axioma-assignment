@@ -1,38 +1,15 @@
 using CsvHelper;
-using System.Formats.Asn1;
 using System.Globalization;
 
-namespace AxiomaAssignment
+namespace AxiomaAssignment.Repositories
 {
-    public class Repository : IRepository
+    public class DataRepository : IDataRepository
     {
         private readonly string _csvFolderPath;
 
-        public Repository(string csvFolderPath)
+        public DataRepository(string csvFolderPath)
         {
             _csvFolderPath = csvFolderPath;
-        }
-        public IList<IDictionary<string, string>> GetRowsFromSingleCsvFile(string csvFilePath)
-        {
-            var result = new List<IDictionary<string, string>>();
-            using (var reader = new StreamReader(csvFilePath))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-            {
-                csv.Read();
-                csv.ReadHeader(); // Read the header
-
-                while (csv.Read())
-                {
-                    var rowDict = new Dictionary<string, string>();
-                    foreach (var header in csv.HeaderRecord)
-                    {
-                        rowDict[header] = csv.GetField(header);
-                    }
-                    result.Add(rowDict);
-                }
-            }
-
-            return result;
         }
 
         public IList<IDictionary<string, string>> GetRowsFromAllCsvFiles()
@@ -44,6 +21,29 @@ namespace AxiomaAssignment
             {
                 var rows = GetRowsFromSingleCsvFile(csvFile);
                 result.AddRange(rows);
+            }
+
+            return result;
+        }
+
+        private IList<IDictionary<string, string>> GetRowsFromSingleCsvFile(string csvFilePath)
+        {
+            var result = new List<IDictionary<string, string>>();
+            using (var reader = new StreamReader(csvFilePath))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                csv.Read();
+                csv.ReadHeader();
+
+                while (csv.Read())
+                {
+                    var rowDict = new Dictionary<string, string>();
+                    foreach (var header in csv.HeaderRecord)
+                    {
+                        rowDict[header] = csv.GetField(header);
+                    }
+                    result.Add(rowDict);
+                }
             }
 
             return result;

@@ -1,4 +1,4 @@
-﻿namespace AxiomaAssignment
+﻿namespace AxiomaAssignment.Services
 {
     public interface INode
     {

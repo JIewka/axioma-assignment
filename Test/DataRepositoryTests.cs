@@ -1,12 +1,10 @@
-﻿using AxiomaAssignment;
-using Moq;
-using System.Text.Json;
-using System.Xml.Linq;
+﻿using System.Text.Json;
+using AxiomaAssignment.Repositories;
 using Xunit;
 
 namespace Test;
 
-public class RepositoryTests
+public class DataRepositoryTests
 {
     [Fact]
     public void TestSingleResultReturned()
@@ -14,7 +12,7 @@ public class RepositoryTests
         // arrange
         var currentDirectory = Directory.GetCurrentDirectory();
         var csvFolderPath = Path.Combine(currentDirectory, "../../../TestCsvFiles");
-        var repository = new Repository(csvFolderPath);
+        var repository = new DataRepository(csvFolderPath);
         var expectedResult = new List<IDictionary<string, string>>
         {
             new Dictionary<string, string> { { "name", "Aleksej" }, { "surname", "Borisov" }, {"age", "27"}, {"email", "bla@gmail.com"} },

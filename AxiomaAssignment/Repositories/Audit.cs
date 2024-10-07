@@ -1,4 +1,4 @@
-﻿namespace AxiomaAssignment
+﻿namespace AxiomaAssignment.Repositories
 {
     public class Audit : IAudit
     {

@@ -1,22 +1,17 @@
-﻿using AxiomaAssignment;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using AxiomaAssignment.Services;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Test
 {
-    public class ParsingServiceTests
+    public class QueryParsingServiceTests
     {
         [Fact]
         public void TestParseEqualsInputQuery()
         {
             // arrange
             var searchQuery = "Name = Alex";
-            var parsingService = new ParsingService();
+            var parsingService = new QueryParsingService();
 
             // act
             INode actualNode = parsingService.Parse(searchQuery);
@@ -32,7 +27,7 @@ namespace Test
         {
             // arrange
             var searchQuery = "Name = Alex AND name = john or name = PETE";
-            var parsingService = new ParsingService();
+            var parsingService = new QueryParsingService();
 
             // act
             INode actualNode = parsingService.Parse(searchQuery);
@@ -63,7 +58,7 @@ namespace Test
         {
             // arrange
             var searchQuery = "Name = Alex AND OR name = john";
-            var parsingService = new ParsingService();
+            var parsingService = new QueryParsingService();
 
             // act & assert
             var exception = Assert.Throws<ArgumentException>(() => parsingService.Parse(searchQuery));
@@ -75,7 +70,7 @@ namespace Test
         {
             // arrange
             var searchQuery = "Name = Alex AND name = john OR name = PETE AND Age = 30 OR Department = Sales";
-            var parsingService = new ParsingService();
+            var parsingService = new QueryParsingService();
 
             // act
             INode actualNode = parsingService.Parse(searchQuery);
@@ -118,7 +113,7 @@ namespace Test
         {
             // arrange
             var searchQuery = "Name = Alex OR name = john";
-            var parsingService = new ParsingService();
+            var parsingService = new QueryParsingService();
             var expectedNode = Node.CreateOperatorNode(OperatorEnum.OR,
                 Node.CreateOperatorNode(OperatorEnum.EQ,
                     Node.CreateColumnNameNode("Name"),
@@ -142,7 +137,7 @@ namespace Test
         {
             // arrange
             var searchQuery = "Name = Alex AND name = john";
-            var parsingService = new ParsingService();
+            var parsingService = new QueryParsingService();
             var expectedNode = Node.CreateOperatorNode(OperatorEnum.AND,
                 Node.CreateOperatorNode(OperatorEnum.EQ,
                     Node.CreateColumnNameNode("Name"),
@@ -168,7 +163,7 @@ namespace Test
         {
             // arrange
             var searchQuery = $"Description {likeOperator} developer";
-            var parsingService = new ParsingService();
+            var parsingService = new QueryParsingService();
             var expectedNode = Node.CreateOperatorNode(OperatorEnum.LIKE,
                 Node.CreateColumnNameNode("Description"),
                 Node.CreateValueNode("developer")
@@ -186,7 +181,7 @@ namespace Test
         {
             // arrange
             var searchQuery = "Age < 30";
-            var parsingService = new ParsingService();
+            var parsingService = new QueryParsingService();
             var expectedNode = Node.CreateOperatorNode(OperatorEnum.LT,
                 Node.CreateColumnNameNode("Age"),
                 Node.CreateValueNode("30")
@@ -204,7 +199,7 @@ namespace Test
         {
             // arrange
             var searchQuery = "Age > 18";
-            var parsingService = new ParsingService();
+            var parsingService = new QueryParsingService();
             var expectedNode = Node.CreateOperatorNode(OperatorEnum.GT,
                 Node.CreateColumnNameNode("Age"),
                 Node.CreateValueNode("18")
@@ -222,7 +217,7 @@ namespace Test
         {
             // arrange
             var searchQuery = "Name != Alex";
-            var parsingService = new ParsingService();
+            var parsingService = new QueryParsingService();
             var expectedNode = Node.CreateOperatorNode(OperatorEnum.NE,
                 Node.CreateColumnNameNode("Name"),
                 Node.CreateValueNode("Alex")
@@ -234,7 +229,5 @@ namespace Test
             // assert
             Assert.Equal(JsonSerializer.Serialize(expectedNode), JsonSerializer.Serialize(actualNode));
         }
-
-
     }
 }

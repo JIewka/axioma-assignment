@@ -1,6 +1,8 @@
-﻿namespace AxiomaAssignment
+﻿using AxiomaAssignment.Repositories;
+
+namespace AxiomaAssignment.Services
 {
-    public class QueryService(IRepository repository) : IQueryService
+    public class QueryService(IDataRepository repository) : IQueryService
     {
         public IList<IDictionary<string, string>> Search(INode searchNode)
         {
@@ -31,7 +33,7 @@
             }
 
             throw new NotImplementedException($"Operator {node.Operator} is not supported.");
-        } 
+        }
 
         private bool EvaluateCondition(INode leftNode, INode rightNode, OperatorEnum operatorType, IDictionary<string, string> row)
         {
@@ -99,6 +101,4 @@
             }
         }
     }
-
-
 }

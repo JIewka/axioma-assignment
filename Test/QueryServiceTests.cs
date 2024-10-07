@@ -1,9 +1,7 @@
-﻿using AxiomaAssignment;
+﻿using AxiomaAssignment.Repositories;
+using AxiomaAssignment.Services;
 using Moq;
-using System.Text.Json;
-using System.Xml.Linq;
 using Xunit;
-using Xunit.Sdk;
 
 namespace Test
 {
@@ -13,7 +11,7 @@ namespace Test
         public void TestEqualsSingleResultReturned()
         {
             // arrange
-            var repositoryMock = new Mock<IRepository>();
+            var repositoryMock = new Mock<IDataRepository>();
             repositoryMock
                 .Setup(r => r.GetRowsFromAllCsvFiles())
                 .Returns(new List<IDictionary<string, string>>
@@ -42,7 +40,7 @@ namespace Test
         public void TestEqualsMultipleResultsReturned()
         {
             // arrange
-            var repositoryMock = new Mock<IRepository>();
+            var repositoryMock = new Mock<IDataRepository>();
             repositoryMock
                 .Setup(r => r.GetRowsFromAllCsvFiles())
                 .Returns(new List<IDictionary<string, string>>
@@ -75,7 +73,7 @@ namespace Test
         public void TestOrMultipleResultsReturned()
         {
             // arrange
-            var repositoryMock = new Mock<IRepository>();
+            var repositoryMock = new Mock<IDataRepository>();
             repositoryMock
                 .Setup(r => r.GetRowsFromAllCsvFiles())
                 .Returns(new List<IDictionary<string, string>>
@@ -115,7 +113,7 @@ namespace Test
         public void TestAndSingleResultReturned()
         {
             // arrange
-            var repositoryMock = new Mock<IRepository>();
+            var repositoryMock = new Mock<IDataRepository>();
             repositoryMock
                 .Setup(r => r.GetRowsFromAllCsvFiles())
                 .Returns(new List<IDictionary<string, string>>
@@ -151,7 +149,7 @@ namespace Test
         public void TestNotEqualsSingleResultReturned()
         {
             // arrange
-            var repositoryMock = new Mock<IRepository>();
+            var repositoryMock = new Mock<IDataRepository>();
             repositoryMock
                 .Setup(r => r.GetRowsFromAllCsvFiles())
                 .Returns(new List<IDictionary<string, string>>
@@ -180,7 +178,7 @@ namespace Test
         public void TestLessThanSingleResultReturned()
         {
             // arrange
-            var repositoryMock = new Mock<IRepository>();
+            var repositoryMock = new Mock<IDataRepository>();
             repositoryMock
                 .Setup(r => r.GetRowsFromAllCsvFiles())
                 .Returns(new List<IDictionary<string, string>>
@@ -209,7 +207,7 @@ namespace Test
         public void TestGreaterThanSingleResultReturned()
         {
             // arrange
-            var repositoryMock = new Mock<IRepository>();
+            var repositoryMock = new Mock<IDataRepository>();
             repositoryMock
                 .Setup(r => r.GetRowsFromAllCsvFiles())
                 .Returns(new List<IDictionary<string, string>>
@@ -238,7 +236,7 @@ namespace Test
         public void TestLikeMultipleResultsReturned()
         {
             // arrange
-            var repositoryMock = new Mock<IRepository>();
+            var repositoryMock = new Mock<IDataRepository>();
             repositoryMock
                 .Setup(r => r.GetRowsFromAllCsvFiles())
                 .Returns(new List<IDictionary<string, string>>

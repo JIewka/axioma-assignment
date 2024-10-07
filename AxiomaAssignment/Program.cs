@@ -1,12 +1,16 @@
-﻿using AxiomaAssignment;
-using System.Text.Json;
+﻿using System.Text.Json;
+using AxiomaAssignment.Repositories;
+using AxiomaAssignment.Services;
 
 var currentDirectory = Directory.GetCurrentDirectory();
 var csvFolderPath = Path.Combine(currentDirectory, "../../../CsvFiles");
-var repository = new Repository(csvFolderPath);
+var repository = new DataRepository(csvFolderPath);
 
 var auditDbContext = new AuditDbContext();
 var auditRepository = new AuditRepository(auditDbContext);
+
+var queryParsingService = new QueryParsingService();
+var queryService = new QueryService(repository);
 
 while (true)
 {
@@ -28,15 +32,21 @@ while (true)
             Console.WriteLine("Enter your query:");
             var query = Console.ReadLine();
 
-            var queryParsingService = new ParsingService();
+            if (!IsQueryValid(query))
+            {
+                Console.WriteLine("Invalid query. Make sure that you indicate operator, column name and value");
+                break;
+            }
+
+            
             var rootNode = queryParsingService.Parse(query);
 
-            var queryService = new QueryService(repository);
+            
             var queryResult = queryService.Search(rootNode);
 
             if (queryResult.Count == 0)
             {
-                Console.WriteLine("No results found.");
+                Console.WriteLine("No results found");
             }
             else
             {
@@ -79,7 +89,7 @@ while (true)
             var audits  = await auditRepository.GetAllAuditsAsync();
             if (audits.Count == 0)
             {
-                Console.WriteLine("No audits found.");
+                Console.WriteLine("No audits found");
             }
             else
             {
@@ -91,11 +101,73 @@ while (true)
             break;
 
         case "3":
-            Console.WriteLine("Sending notifications...");
+            Console.WriteLine("Enter severity operator (>, <, =):");
+            var stringSeverityOperator = Console.ReadLine();
+
+            if (stringSeverityOperator != ">" && stringSeverityOperator != "<" && stringSeverityOperator != "=")
+            {
+                Console.WriteLine("Invalid operator. Please use '>', '<', or '='");
+                break;
+            }
+
+            Console.WriteLine("Enter severity number:");
+            if (!int.TryParse(Console.ReadLine(), out int severityNumber))
+            {
+                Console.WriteLine("Invalid number. Please enter a valid integer.");
+                break;
+            }
+
+            OperatorEnum severityOperator;
+
+            if (stringSeverityOperator == ">")
+            {
+                severityOperator = OperatorEnum.GT;
+            }
+            else if (stringSeverityOperator == "<")
+            {
+                severityOperator = OperatorEnum.LT;
+            }
+            else
+            {
+                severityOperator = OperatorEnum.EQ;
+            }
+
+            var severityNode = Node.CreateOperatorNode(
+                severityOperator, 
+                Node.CreateColumnNameNode("severity"), 
+                Node.CreateValueNode(severityNumber.ToString()));
+
+            var queryResultLogs = queryService.Search(severityNode);
+
+            var notificationService = new NotificationService();
+            notificationService.SendNotifications(queryResultLogs);
+
+            Console.WriteLine("Notifications sent based on severity.");
             break;
 
         default:
-            Console.WriteLine("Invalid choice, please choose a valid option.");
+            Console.WriteLine("Invalid option");
             break;
     }
+}
+
+bool IsQueryValid(string query)
+{
+    string[] validOperators = { "=", "!=", "or", "and", "<", ">", "like" };
+    var parts = query.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+    if (parts.Length < 3)
+    {
+        return false;
+    }
+
+    foreach (var part in parts)
+    {
+        if (validOperators.Contains(part))
+        {
+            return true;
+        }
+    }
+
+    return false;
 }

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace AxiomaAssignment
+﻿namespace AxiomaAssignment.Services
 {
-    public class ParsingService : IParsingService
+    public class QueryParsingService : IQueryParsingService
     {
         public INode Parse(string query)
         {

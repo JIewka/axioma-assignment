@@ -1,12 +1,12 @@
-namespace AxiomaAssignment
+namespace AxiomaAssignment.Services
 {
-    public class Node: INode
+    public class Node : INode
     {
         private Node(
-            OperatorEnum? @operator, 
-            string? value, 
-            string? columnName, 
-            INode? leftNode, 
+            OperatorEnum? @operator,
+            string? value,
+            string? columnName,
+            INode? leftNode,
             INode? rightNode)
         {
             Operator = @operator;
